@@ -1,0 +1,15 @@
+**/none
+
+# anything that says ends or begins with .tmp is for local purposes and will not be committed (unless explicitly commited for sample purposes)
+# all questionable development can be done in .tmp and then put into modules as required
+**/.tmp*
+**/*.tmp*
+
+# anything that begins with .local is for local purposes is purely here
+# here in are the logs, caches, data etc.
+**/.local
+**/.local-*
+
+**/--epx*/fw~*
+**/--epx*/fw__*
+**/--epx*/fw
