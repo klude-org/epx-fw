@@ -66,9 +66,9 @@ final class a extends \stdClass {
                     ;
                     \set_error_handler(fn() => true);
                     if($contents = \file_get_contents("{$url}/".\urlencode('-#.php'), ...$args)){
-                        $f_path = \FW__DIR."/{$p}/-#.php";
+                        $f_path = \FW__LIB_DIR."/{$p}/-#.php";
                     } else if($contents = \file_get_contents("{$url}".\urlencode('-#.php'), ...$args)) {
-                        $f_path = \FW__DIR."/{$p}-#.php";
+                        $f_path = \FW__LIB_DIR."/{$p}-#.php";
                     }
                     \restore_error_handler();
                     if($contents){
@@ -117,7 +117,7 @@ final class a extends \stdClass {
         $mm = \strtr($wm,'/','~');
         $mv = \strtr($wv,'/','~');
         $wj = \strtr("{$wd}/{$wo}/{$wp}/{$mv}",'_','-');
-        $mod_d = \FW__DIR.'/'.($mj = \strtr("fw__{$wd}__{$wo}__{$wp}.{$mv}",'-','_')."/{$wm}");
+        $mod_d = \FW__LIB_DIR.'/'.($mj = \strtr("fw__{$wd}__{$wo}__{$wp}.{$mv}",'-','_')."/{$wm}");
         if(\is_dir($mod_d)) {
             return \str_replace('\\','/', \realpath($mod_d));
         }
@@ -234,7 +234,7 @@ final class a extends \stdClass {
                 }
             } else if(\is_dir($d = \FW__SITE_DIR.'/--epx/'.$expr)){
                 return \str_replace('\\','/', $d);
-            } else if(\is_dir($d = \FW__DIR.'/'.$expr)){
+            } else if(\is_dir($d = \FW__LIB_DIR.'/'.$expr)){
                 return \str_replace('\\','/', $d);
             }
         }
