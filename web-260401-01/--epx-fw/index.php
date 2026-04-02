@@ -99,8 +99,13 @@ namespace { if($f = (function(){
             $line
         );
     });
-    
+    \define('FW__PHP_TSP_DEFAULTS', [
+        'handler' => 'spl_autoload',
+        'extensions' => \spl_autoload_extensions(),
+        'path' =>  \get_include_path(),
+    ]);
     \define('FW__DIR', \strtr(__DIR__, '\\','/'));
+    \define('FW__LIB_DIR', \strtr(FW__DIR.'/lib', '\\','/'));
     \define('FW__SITE_DIR', \rtrim(\strtr($_SERVER['FW__SITE_DIR'] ?? (empty($_SERVER['HTTP_HOST'])
         ? realpath($_SERVER['FW__SITE_DIR'] ?? \getcwd())
         : realpath(\dirname($_SERVER['SCRIPT_FILENAME']))
@@ -116,21 +121,9 @@ namespace { if($f = (function(){
             }
         }
     })() ?: \dirname(__DIR__)), '\\','/'));
-    \define('FW__IS_HTTP', !empty($_SERVER['HTTP_HOST']));
-    \define('FW__IS_CLI', !empty($_SERVER['HTTP_HOST']));
-    \define('FW__INTFC', $intfc = $_SERVER['FW__INTFC']
-        ?? (empty($_SERVER['HTTP_HOST']) 
-            ? 'cli'
-            : $_SERVER['HTTP_X_REQUEST_INTERFACE'] ?? 'web'
-        )
-    );
     \define('FW__ENV_PHP', \FW__SITE_DIR."/.local/.fw-env-{$intfc}.php");
     \define('FW__CFG_PHP', \FW__SITE_DIR."/.fw-cfg.php");
-    \define('FW__PHP_TSP_DEFAULTS', [
-        'handler' => 'spl_autoload',
-        'extensions' => \spl_autoload_extensions(),
-        'path' =>  \get_include_path(),
-    ]);
+    \set_include_path(\FW__LIB_DIR.PATH_SEPARATOR.\get_include_path());
     \spl_autoload_extensions("-#{$intfc}.php,/-#{$intfc}.php,-#.php,/-#.php");
     \spl_autoload_register();
     \spl_autoload_register($my_fn = function($n) use(&$my_fn){
@@ -138,7 +131,7 @@ namespace { if($f = (function(){
             $fw_class = $GLOBALS['FW__CLASS'] ?? \fw\types\a::class;
             if(\class_exists($fw_class,false)){
                 \class_alias($fw_class, $n);
-            } else if(\is_file($fw_php = \FW__DIR.\strtr("/{$fw_class}/-#.php",'\\','/'))) {
+            } else if(\is_file($fw_php = \FW__LIB_DIR.\strtr("/{$fw_class}/-#.php",'\\','/'))) {
                 include $fw_php;  
                 \class_alias($fw_class, $n);
             } else {
@@ -182,9 +175,11 @@ namespace { if($f = (function(){
             )
         )
     ){
-        \is_file($f = \FW__CFG_PHP) AND include $f;
+        \is_file($f = \FW__CFG_PHP) AND (function($f){ global $_; include $f; })($f);
         $GLOBALS['FW__CLASS'] = \fw::class."\\types\\".($_['FW__TYPE'] ?? $_SERVER['FW__TYPE'] ?? 'a');
-        (\FW__DIR == \FW__SITE_DIR) AND $_['FW__APP'] ??= '#-app-260401-01@github/klude-org/epx-fw/main';
+        if(\realpath(__FILE__) == \realpath($_SERVER['SCRIPT_FILENAME'])){
+            $_['FW__APP'] ??= '#-app-260401-01@github/klude-org/epx-fw/main';
+        }
         \fw::_()->build_env();
     }
 

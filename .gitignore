@@ -10,6 +10,4 @@
 **/.local
 **/.local-*
 
-**/--epx*/fw~*
-**/--epx*/fw__*
-**/--epx*/fw
+**/--epx*/lib
